@@ -14,7 +14,7 @@ unzip the files but keep them in the same directory, the executable needs the SD
 [4]           = set color to green  
 [5]           = set color to blue  
 [6]           = set color to yellow  
-[7]           = set color to rainbow (cycles through all of the colors quickly)  
+[7]           = set color to rainbow (cycles quickly through all of the colors)  
 [0]           = resets canvas  
 [scroll up]   = increase pen size  
 [scroll down] = decrease pen size  
