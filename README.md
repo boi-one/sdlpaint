@@ -1,7 +1,12 @@
 # SDL PAINT
-A small application I made to see how the sdl surface works.
+A small application I made to see how the sdl surface works.  
 
-## controls
+[DOWNLOAD NOW!!](https://github.com/boi-one/sdlpaint/releases/tag/1.0)
+
+## Install
+unzip the files but keep them in the same directory, the executable needs the SDL exe.
+
+## Controls
 
 [1]           = set color to white  
 [2]           = set color to black  
@@ -14,3 +19,18 @@ A small application I made to see how the sdl surface works.
 [scroll up]   = increase pen size  
 [scroll down] = decrease pen size  
 [escape]      = quit application  
+
+## How to Build
+
+1. pull repository
+2. install cmake
+3. create directory called `build`
+4. cd into the build directory
+5. type `cmake ..` to build the project
+6. open the solution file
+   
+if there are any problems check the CMakeList.txt, its either the vcpkg.cmake which is located somewhere else or you don't have vcpkg installed at all.
+
+## Demo
+
+![afbeelding](https://github.com/user-attachments/assets/b5d268ef-84dc-4932-bc95-da57056cbc51)
