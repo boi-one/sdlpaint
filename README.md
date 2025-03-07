@@ -12,5 +12,5 @@ A small application I made to see how the sdl surface works.
 [7]           = set color to rainbow (cycles through all of the colors quickly)  
 [0]           = resets canvas  
 [scroll up]   = increase pen size  
-[scroll down] = decrease pen size
+[scroll down] = decrease pen size  
 [escape]      = quit application  
