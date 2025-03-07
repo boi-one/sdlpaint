@@ -3,73 +3,164 @@
 
 #include <iostream>
 
-#define WIDTH 900
-#define HEIGHT 600
+static int WIDTH = 900;
+static int HEIGHT = 600;
 
-#define WHITE 0xffffffff
-#define BLACK 0x00000000
+#define RED    0xffff0000
+#define GREEN  0xff00ff00
+#define BLUE   0xff0000ff
+#define YELLOW 0xffffff00
+#define WHITE  0xffffffff
+#define BLACK  0xff000000
 
-void ClearScreen(SDL_Surface& surface, SDL_Rect& full)
+int Clamp(int value, int min, int max)
 {
-	SDL_FillRect(&surface, &full, BLACK);
+	int temp;
+	if (max < min)
+	{
+		temp = min;
+		min = max;
+		max = temp;
+	}
+	if (value < min) value = min;
+	if (value > max) value = max;
+	return value;
 }
 
-int Clamp(int& i, int min, int max)
+void ClearScreen(SDL_Surface* s)
 {
-	if (i < min) return min;
-	if (i > max) return max;
-	return i;
+	SDL_Rect r;
+	r.x = 0;
+	r.y = 0;
+	r.w = WIDTH;
+	r.h = HEIGHT;
+
+	SDL_FillRect(s, &r, BLACK);
+}
+
+void SetPixel(SDL_Surface* s, int x, int y, unsigned int c)
+{
+	SDL_Rect r;
+	r.x = x;
+	r.y = y;
+	r.w = 1;
+	r.h = 1;
+	SDL_FillRect(s, &r, c);
+}
+
+void DrawCircle(SDL_Surface* s, int radius, int mouseX, int mouseY, int color)
+{
+	int centerX = mouseX - radius;
+	int centerY = mouseY - radius;
+
+	int radiusSqrt = radius * radius;
+
+	for (int x = 0; x < radius * 2; x++) for(int y = 0; y < radius * 2; y++)
+	{
+		int cx = x - radius;
+		int cy = y - radius;
+
+		int centerSqrt = cx * cx + cy * cy;
+		if(centerSqrt < radiusSqrt)	SetPixel(s, x + centerX, y + centerY, color);
+	}
 }
 
 int main()
 {
 	bool running = true;
 	bool drawing = false;
+	bool rainbow = false;
+	int penSize = 1;
+	int currentColor = WHITE;
+	int time = 2000;
+	int colors[] =
+	{
+		RED,
+		GREEN,
+		BLUE,
+		YELLOW
+	};
+	int colorIndex = 0;
 
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_Window* window = SDL_CreateWindow("SDL Paint", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_Window* window = SDL_CreateWindow("SDL Paint", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, (SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED));
 	SDL_GLContext gl_context = SDL_GL_CreateContext(window);
 	SDL_Surface* surface = SDL_GetWindowSurface(window);
-
-	SDL_Rect full;
-	SDL_Rect rect;
-	full.x = 0;
-	full.y = 0;
-	full.w = WIDTH;
-	full.h = HEIGHT;
-
-	int currentColor = 0xffffffff;
 
 	while (running)
 	{
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
-			if (event.type == SDL_QUIT) running = false;
-			if (event.type == SDL_MOUSEBUTTONDOWN) drawing = true;
-			if (event.type == SDL_MOUSEBUTTONUP) drawing = false;
-			if (event.type == SDL_MOUSEWHEEL)
+			switch (event.type)
 			{
-				std::cout << currentColor << std::endl;
-				currentColor += event.wheel.preciseY;
-				//currentColor = Clamp(currentColor, BLACK, WHITE);
+			case SDL_QUIT:
+				running = false;
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				drawing = true;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				drawing = false;
+				break;
+			case SDL_KEYDOWN:
+			{
+				rainbow = false;
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_1:
+					currentColor = WHITE;
+					break;
+				case SDLK_2:
+					currentColor = BLACK;
+					break;
+				case SDLK_3:
+					currentColor = RED;
+					break;
+				case SDLK_4:
+					currentColor = GREEN;
+					break;
+				case SDLK_5:
+					currentColor = BLUE;
+					break;
+				case SDLK_6:
+					currentColor = YELLOW;
+					break;
+				case SDLK_7:
+					rainbow = !rainbow;
+					break;
+				case SDLK_0:
+					ClearScreen(surface);
+					break;
+				case SDLK_ESCAPE:
+					running = false;
+					break;
+				}
+			}break;
+			case SDL_MOUSEWHEEL:
+			{
+				if (event.wheel.y < 0) penSize--;
+				if (event.wheel.y > 0) penSize++;
+				penSize = Clamp(penSize, 2, 20);
+			}
+			break;
 			}
 		}
 
-
-
-		int min = (int)BLACK;
-		int max = (int)WHITE;
-		int currentColor = WHITE;
+		if (SDL_GetTicks() > time)
+		{
+			time = SDL_GetTicks() + 100;
+			if (rainbow)
+			{
+				currentColor = colors[colorIndex];
+				colorIndex = colorIndex < sizeof(colors) / sizeof(int) ? ++colorIndex : 0;
+			}
+		}
 
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
 
-		rect.x = mouseX;
-		rect.y = mouseY;
-		rect.w = 2;
-		rect.h = 2;
-		if (drawing) SDL_FillRect(surface, &rect, currentColor);
+		if(drawing) DrawCircle(surface, penSize, mouseX, mouseY, currentColor);
 
 		SDL_UpdateWindowSurface(window);
 	}
