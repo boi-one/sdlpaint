@@ -13,4 +13,4 @@ A small application I made to see how the sdl surface works.
 [0]           = resets canvas  
 [scroll up]   = increase pen size  
 [scroll down] = decrease pen size
-[escape]      = quit application
+[escape]      = quit application  
