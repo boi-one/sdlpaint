@@ -4,7 +4,7 @@ A small application I made to see how the sdl surface works.
 [DOWNLOAD NOW!!](https://github.com/boi-one/sdlpaint/releases/tag/1.0)
 
 ## Install
-unzip the files but keep them in the same directory, the executable needs the SDL exe.
+unzip the files but keep them in the same directory, the executable needs the SDL.dll.
 
 ## Controls
 
