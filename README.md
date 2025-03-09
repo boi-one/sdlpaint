@@ -1,10 +1,10 @@
 # SDL PAINT
 A small application I made to see how the sdl surface works.  
 
-[DOWNLOAD NOW!!](https://github.com/boi-one/sdlpaint/releases/tag/1.0)
+[DOWNLOAD NOW!!](https://github.com/boi-one/sdlpaint/releases/tag/1.1)
 
 ## Install
-unzip the files but keep them in the same directory, the executable needs the SDL.dll.
+unzip the files but keep them in the same directory, the executable needs the dll files.
 
 ## Controls
 
@@ -14,10 +14,13 @@ unzip the files but keep them in the same directory, the executable needs the SD
 [4]           = set color to green  
 [5]           = set color to blue  
 [6]           = set color to yellow  
-[7]           = set color to rainbow (cycles quickly through all of the colors)  
+[7]           = set color to magenta  
+[8]           = set color to cyan
+[9]           = toggle rainbow mode (cycles quickly through all of the colors)  
 [0]           = resets canvas  
 [scroll up]   = increase pen size  
 [scroll down] = decrease pen size  
+[S]           = save image to root directory of the executable   
 [escape]      = quit application  
 
 ## How to Build
