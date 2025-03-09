@@ -1,24 +1,29 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
-
+#include <SDL_image.h>
 #include <iostream>
+#include <string>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
 
 static int WIDTH = 900;
 static int HEIGHT = 600;
 
-#define RED    0xffff0000
-#define GREEN  0xff00ff00
-#define BLUE   0xff0000ff
-#define YELLOW 0xffffff00
-#define WHITE  0xffffffff
-#define BLACK  0xff000000
+#define RED     0xffff0000
+#define GREEN   0xff00ff00
+#define BLUE    0xff0000ff
+#define YELLOW  0xffffff00
+#define CYAN    0xff00ffff
+#define MAGENTA 0xffff00ff
+#define WHITE   0xffffffff
+#define BLACK   0xff000000
 
 int Clamp(int value, int min, int max)
 {
-	int temp;
 	if (max < min)
 	{
-		temp = min;
+		int	temp = min;
 		min = max;
 		max = temp;
 	}
@@ -48,20 +53,20 @@ void SetPixel(SDL_Surface* s, int x, int y, unsigned int c)
 	SDL_FillRect(s, &r, c);
 }
 
-void DrawCircle(SDL_Surface* s, int radius, int mouseX, int mouseY, int color)
+void DrawCircle(SDL_Surface* s, int radius, int mouseX, int mouseY, unsigned int color)
 {
 	int centerX = mouseX - radius;
 	int centerY = mouseY - radius;
 
 	int radiusSqrt = radius * radius;
 
-	for (int x = 0; x < radius * 2; x++) for(int y = 0; y < radius * 2; y++)
+	for (int x = 0; x < radius * 2; x++) for (int y = 0; y < radius * 2; y++)
 	{
 		int cx = x - radius;
 		int cy = y - radius;
 
 		int centerSqrt = cx * cx + cy * cy;
-		if(centerSqrt < radiusSqrt)	SetPixel(s, x + centerX, y + centerY, color);
+		if (centerSqrt < radiusSqrt)	SetPixel(s, x + centerX, y + centerY, color);
 	}
 }
 
@@ -70,15 +75,17 @@ int main()
 	bool running = true;
 	bool drawing = false;
 	bool rainbow = false;
-	int penSize = 1;
-	int currentColor = WHITE;
-	int time = 2000;
-	int colors[] =
+	int penSize = 2;
+	unsigned int currentColor = WHITE;
+	int time = 0;
+	unsigned int colors[] =
 	{
 		RED,
 		GREEN,
 		BLUE,
-		YELLOW
+		YELLOW,
+		MAGENTA,
+		CYAN
 	};
 	int colorIndex = 0;
 
@@ -127,11 +134,30 @@ int main()
 					currentColor = YELLOW;
 					break;
 				case SDLK_7:
+					currentColor = MAGENTA;
+					break;
+				case SDLK_8:
+					currentColor = CYAN;
+					break;
+				case SDLK_9:
 					rainbow = !rainbow;
 					break;
 				case SDLK_0:
 					ClearScreen(surface);
 					break;
+				case SDLK_s:
+				{
+					std::string name = "painting ";
+
+					std::time_t now = std::time(0);
+					std::tm* currentTime = std::localtime(&now);
+					std::ostringstream oss;
+					oss << std::put_time(currentTime, "%d-%m-%Y %H-%M-%S");
+					name.append(oss.str());
+					name.append(".png");
+
+					std::cout << IMG_SavePNG(surface, name.c_str()) << std::endl;
+				}break;
 				case SDLK_ESCAPE:
 					running = false;
 					break;
@@ -147,6 +173,8 @@ int main()
 			}
 		}
 
+		SDL_GetWindowSize(window, &WIDTH, &HEIGHT);
+
 		if (SDL_GetTicks() > time)
 		{
 			time = SDL_GetTicks() + 100;
@@ -160,7 +188,7 @@ int main()
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
 
-		if(drawing) DrawCircle(surface, penSize, mouseX, mouseY, currentColor);
+		if (drawing) DrawCircle(surface, penSize, mouseX, mouseY, currentColor);
 
 		SDL_UpdateWindowSurface(window);
 	}
