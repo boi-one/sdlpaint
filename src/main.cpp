@@ -93,7 +93,7 @@ int main()
 	SDL_Window* window = SDL_CreateWindow("SDL Paint", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, (SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED));
 	SDL_GLContext gl_context = SDL_GL_CreateContext(window);
 	SDL_Surface* surface = SDL_GetWindowSurface(window);
-
+	SDL_Surface* infoDisplay = SDL_GetWindowSurface(window);
 	while (running)
 	{
 		SDL_Event event;
@@ -190,6 +190,8 @@ int main()
 
 		if (drawing) DrawCircle(surface, penSize, mouseX, mouseY, currentColor);
 
+		DrawCircle(infoDisplay, 52, 55, 55, WHITE);
+		DrawCircle(infoDisplay, 50, 55, 55, currentColor);
 		SDL_UpdateWindowSurface(window);
 	}
 
